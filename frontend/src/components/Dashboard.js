@@ -269,7 +269,7 @@ if (sortType === "Due Date") {
 
 
 
-  const totalTasks = tasks.length;
+
 
 
     const totalTasks = Array.isArray(tasks)
@@ -442,8 +442,7 @@ if (sortType === "Due Date") {
             </p>
 
             {
-              task.status === "Pending" &&
-              new Date(task.dueDate) < new Date() && (
+              task.status === "Pending" && task.dueDate && new Date(task.dueDate) < new Date() && (
 
                 <p className="overdue-text">
 
