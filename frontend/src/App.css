@@ -1,0 +1,23 @@
+.app-container {
+
+  text-align: center;
+
+}
+
+.switch-button {
+
+  margin-top: 20px;
+
+  padding: 10px 20px;
+
+  cursor: pointer;
+
+}
+
+body {
+
+  background-color: #f5f5f5;
+
+  font-family: Arial, sans-serif;
+
+}
