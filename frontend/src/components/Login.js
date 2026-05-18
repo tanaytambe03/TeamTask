@@ -1,36 +1,59 @@
+```javascript
 import "./Login.css";
 import axios from "axios";
 import { useState } from "react";
+
 function Login() {
 
-const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const [password, setPassword] = useState("");
+  const handleLogin = async () => {
 
-const handleLogin = async () => {
     try {
 
-  const response = await axios.post(
-    "https://teamtask-backend-pdvc.onrender.com/login",
-    {
-      email: email,
-      password: password
+      const response = await axios.post(
+        "https://teamtask-backend-pdvc.onrender.com/login",
+        {
+          email: email,
+          password: password
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.data.token) {
+
+        localStorage.setItem(
+          "token",
+          response.data.token
+        );
+
+        window.location.href = "/";
+
+      }
+
+      else {
+
+        alert(
+          response.data.message
+        );
+
+      }
+
     }
-  );
 
-  console.log(response.data);
+    catch (error) {
 
-    localStorage.setItem(
-        "token",
-    response.data.token
-);
-window.location.reload();
-} catch (error) {
+      console.log(error);
 
-  console.log(error);
-}
+      alert(
+        "Login Failed"
+      );
 
-};
+    }
+
+  };
 
   return (
 
@@ -42,26 +65,43 @@ window.location.reload();
         type="email"
         placeholder="Enter Email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) =>
+          setEmail(
+            e.target.value
+          )
+        }
       />
+
       <br />
       <br />
 
       <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+        type="password"
+        placeholder="Enter Password"
+        value={password}
+        onChange={(e) =>
+          setPassword(
+            e.target.value
+          )
+        }
       />
+
       <br />
       <br />
 
-      <button onClick={handleLogin}>
-          Login
+      <button
+        onClick={handleLogin}
+      >
+
+        Login
+
       </button>
 
     </div>
+
   );
+
 }
 
 export default Login;
+```
