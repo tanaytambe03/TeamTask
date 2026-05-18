@@ -39,7 +39,19 @@ function Dashboard() {
 
       console.log(response.data);
 
+
+    if (Array.isArray(response.data)) {
+
       setTasks(response.data);
+
+    }
+    else {
+
+      setTasks([]);
+
+    }
+
+
 
     } catch (error) {
 
@@ -203,22 +215,30 @@ function Dashboard() {
 
 // };
 
-  const filteredTasks = tasks.filter((task) => {
 
-  const matchesFilter =
+const filteredTasks = (tasks || []).filter(
+  (task) => {
 
-    filter === "All" ||
-    task.status === filter;
+    const matchesFilter =
 
-  const matchesSearch =
+      filter === "All" ||
+      task.status === filter;
 
-    task.title
+    const matchesSearch =
+
+      (task.title || "")
       .toLowerCase()
-      .includes(search.toLowerCase());
+      .includes(
+        search.toLowerCase()
+      );
 
-  return matchesFilter && matchesSearch;
+    return (
+      matchesFilter &&
+      matchesSearch
+    );
 
 });
+
 
 
 const sortedTasks = [...filteredTasks];
