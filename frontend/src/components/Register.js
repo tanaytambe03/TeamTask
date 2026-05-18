@@ -13,17 +13,14 @@ function Register() {
 
     try {
 
-
-      await axios.post(
-      "https://teamtask-backend-pdvc.onrender.com/signup",
-      {
-      name: name,
-      email: email,
-      password: password
-      }
+      const response = await axios.post(
+        "https://teamtask-backend-pdvc.onrender.com/signup",
+        {
+          name: name,
+          email: email,
+          password: password
+        }
       );
-
-
 
       console.log(response.data);
 
