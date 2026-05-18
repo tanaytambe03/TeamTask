@@ -29,7 +29,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "http://localhost:5000/tasks",
+        "https://teamtask-backend-pdvc.onrender.com/tasks",
         {
           headers: {
             authorization: token
@@ -59,7 +59,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.post(
-      "http://localhost:5000/tasks",
+      "https://teamtask-backend-pdvc.onrender.com/tasks",
       {
         title: title,
         description: description,
@@ -101,7 +101,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `http://localhost:5000/tasks/${id}`,
+      `https://teamtask-backend-pdvc.onrender.com/tasks/${id}`,
       {
         status: "Completed"
       },
@@ -139,7 +139,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.delete(
-      `http://localhost:5000/tasks/${id}`,
+      `https://teamtask-backend-pdvc.onrender.com/tasks/${id}`,
       {
         headers: {
           authorization: token
@@ -174,7 +174,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `http://localhost:5000/tasks/${id}`,
+      `https://teamtask-backend-pdvc.onrender.com/tasks/${id}`,
       {
         title: newTitle
       },

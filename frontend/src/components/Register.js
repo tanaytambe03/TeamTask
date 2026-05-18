@@ -14,7 +14,7 @@ function Register() {
     try {
 
       const response = await axios.post(
-        "http://localhost:5000/register",
+        "https://teamtask-backend-pdvc.onrender.com/register",
         {
           name: name,
           email: email,
