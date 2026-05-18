@@ -54,7 +54,7 @@ function Dashboard() {
         "token"
       );
 
-      window.location.reload();
+      window.location.href = "/";
 
     }
 
