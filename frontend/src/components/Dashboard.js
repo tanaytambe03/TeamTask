@@ -45,11 +45,19 @@ function Dashboard() {
       setTasks(response.data);
 
     }
+
     else {
 
       setTasks([]);
 
+      localStorage.removeItem(
+        "token"
+      );
+
+      window.location.reload();
+
     }
+
 
 
 
@@ -263,14 +271,26 @@ if (sortType === "Due Date") {
 
   const totalTasks = tasks.length;
 
-  const completedTasks = tasks.filter(
-    (task) => task.status === "Completed"
-  ).length;
 
-  const pendingTasks = tasks.filter(
-    (task) => task.status === "Pending"
-  ).length;
-  
+    const totalTasks = Array.isArray(tasks)
+      ? tasks.length
+      : 0;
+
+    const completedTasks = Array.isArray(tasks)
+      ? tasks.filter(
+          (task) =>
+            task.status === "Completed"
+        ).length
+      : 0;
+
+    const pendingTasks = Array.isArray(tasks)
+      ? tasks.filter(
+          (task) =>
+            task.status === "Pending"
+        ).length
+      : 0;
+
+
 
   return (
 
