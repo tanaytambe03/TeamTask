@@ -1,12 +1,11 @@
+import "./Login.css";
 import { useState } from "react";
 import axios from "axios";
 
-function Register() {
+function Register({ onSwitchToLogin }) {
 
   const [name, setName] = useState("");
-
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
@@ -33,46 +32,99 @@ function Register() {
 
   return (
 
-    <div>
+    <div className="login-page">
 
-      <h2>Register</h2>
+      {/* LEFT COLUMN - Image */}
+      <div className="login-image-col">
+        <div className="login-image-overlay"></div>
+        <img
+          className="login-image"
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80"
+          alt="Workspace and productivity"
+        />
+        <div className="login-image-text">
+          <h2>Start Your Journey</h2>
+          <p>Join TeamTask and streamline your team's productivity from day one.</p>
+        </div>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Enter Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      {/* RIGHT COLUMN - Register Form */}
+      <div className="login-form-col">
+        <div className="login-form-card">
+          <div className="login-header">
+            <div className="login-brand">
+              <img src="/Logo2.png" alt="TeamTask logo" className="login-logo-img" />
+            </div>
+            <p className="login-subtitle">Create your account to get started.</p>
+          </div>
 
-      <br />
-      <br />
+          <div className="login-form">
+            <div className="input-group">
+              <label>Name</label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) =>
+                  setName(
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
-      <input
-        type="email"
-        placeholder="Enter Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+            <div className="input-group">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) =>
+                  setEmail(
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
-      <br />
-      <br />
+            <div className="input-group">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) =>
+                  setPassword(
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
-      <input
-        type="password"
-        placeholder="Enter Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            <button
+              className="login-btn"
+              onClick={handleRegister}
+            >
+              Create Account
+            </button>
 
-      <br />
-      <br />
-
-      <button onClick={handleRegister}>
-        Register
-      </button>
+            <p className="register-link">
+              Already have an account?{' '}
+              <span
+                className="register-link-text"
+                onClick={onSwitchToLogin}
+              >
+                Sign in here
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
 
     </div>
+
   );
+
 }
 
 export default Register;

@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
 
@@ -12,15 +13,31 @@ function Navbar() {
 
   return (
 
-    <div className="navbar">
+    <nav className="navbar">
 
-      <h2>TeamTask</h2>
+      <div className="navbar-brand">
+        <img src="/Logo3.png" alt="TeamTask logo" className="navbar-logo" />
+      </div>
 
-      <button onClick={logout}>
-        Logout
-      </button>
+      <div className="navbar-links">
+        <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          Dashboard
+        </NavLink>
+        <NavLink to="/about" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          About
+        </NavLink>
+        <NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          Contact
+        </NavLink>
+      </div>
 
-    </div>
+      <div className="navbar-right">
+        <button className="logout-btn" onClick={logout}>
+          Logout
+        </button>
+      </div>
+
+    </nav>
   );
 }
 
