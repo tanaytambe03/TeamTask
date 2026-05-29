@@ -282,9 +282,6 @@ function Chat() {
     );
   });
 
-  // Get user's own name
-  const currentUserName = localStorage.getItem("userName") || "You";
-
   return (
     <div className={`chat-layout${showMobileChat ? " mobile-chat-open" : ""}`}>
       {/* ===== CONTACTS PANEL ===== */}
