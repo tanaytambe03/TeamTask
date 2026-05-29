@@ -9,17 +9,49 @@ function Contact() {
     message: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Contact form submitted:", formData);
-    setSubmitted(true);
-    setFormData({ name: "", email: "", mobile: "", message: "" });
-    setTimeout(() => setSubmitted(false), 4000);
+    setSending(true);
+    setError("");
+
+    try {
+
+      const response = await fetch("https://formspree.io/f/xdajbvlw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+
+        setSubmitted(true);
+        setFormData({ name: "", email: "", mobile: "", message: "" });
+        setTimeout(() => setSubmitted(false), 4000);
+
+      } else {
+
+        setError("Something went wrong. Please try again later.");
+
+      }
+
+    } catch (err) {
+
+      setError("Network error. Please check your connection.");
+
+    }
+
+    setSending(false);
   };
 
   return (
@@ -67,6 +99,12 @@ function Contact() {
             {submitted && (
               <div className="contact-success">
                 ✅ Your message has been sent! We'll reply shortly.
+              </div>
+            )}
+
+            {error && (
+              <div className="contact-error">
+                ❌ {error}
               </div>
             )}
 
@@ -125,8 +163,8 @@ function Contact() {
                   required
                 />
               </div>
-              <button type="submit" className="contact-submit-btn">
-                Send Message
+              <button type="submit" className="contact-submit-btn" disabled={sending}>
+                {sending ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>

@@ -1,15 +1,7 @@
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
 
-function Navbar() {
-
-  const logout = () => {
-
-    localStorage.removeItem("token");
-
-    window.location.reload();
-
-  };
+function Navbar({ userName, userEmail, onLogout }) {
 
   return (
 
@@ -32,7 +24,15 @@ function Navbar() {
       </div>
 
       <div className="navbar-right">
-        <button className="logout-btn" onClick={logout}>
+        {(userName || userEmail) && (
+          <div className="user-info">
+            <span className="user-avatar">
+              {(userName || userEmail).charAt(0).toUpperCase()}
+            </span>
+            <span className="user-email">{userEmail || userName}</span>
+          </div>
+        )}
+        <button className="logout-btn" onClick={onLogout}>
           Logout
         </button>
       </div>

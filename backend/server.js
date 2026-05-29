@@ -162,7 +162,9 @@ app.post("/login", async (req, res) => {
 
     res.send({
       message: "Login Successful",
-      token: token
+      token: token,
+      name: user.name,
+      email: user.email
     });
 
   } catch (error) {
@@ -193,6 +195,26 @@ app.get(
     const users = await User.find();
 
     res.send(users);
+});
+
+app.get("/me", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    res.send({
+      name: user.name,
+      email: user.email,
+      role: user.role
+    });
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(error.message);
+  }
 });
 
 const PORT = process.env.PORT || 5000;

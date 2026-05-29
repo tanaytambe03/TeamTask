@@ -817,7 +817,7 @@
   color: #999;
 }
 
-/* Success Message */
+/* Success & Error Messages */
 
 .contact-success {
   background: #e8f5e9;
@@ -827,10 +827,21 @@
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 20px;
-  animation: successFadeIn 0.3s ease;
+  animation: contactFadeIn 0.3s ease;
 }
 
-@keyframes successFadeIn {
+.contact-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  animation: contactFadeIn 0.3s ease;
+}
+
+@keyframes contactFadeIn {
   from {
     opacity: 0;
     transform: translateY(-8px);
@@ -910,13 +921,18 @@
   align-self: flex-start;
 }
 
-.contact-submit-btn:hover {
+.contact-submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(26, 35, 126, 0.3);
 }
 
-.contact-submit-btn:active {
+.contact-submit-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.contact-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ===== CONTACT RESPONSIVE ===== */

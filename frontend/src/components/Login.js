@@ -1,8 +1,8 @@
 import "./Login.css";
 import axios from "axios";
 import { useState } from "react";
-
-function Login({ onSwitchToRegister }) {
+                                                                                
+function Login({ onSwitchToRegister, onLoginSuccess }) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,12 +23,12 @@ function Login({ onSwitchToRegister }) {
 
       if (response.data.token) {
 
-        localStorage.setItem(
-          "token",
-          response.data.token
-        );
-
-        window.location.href = "/";
+        // Pass login data to App.js which updates state + localStorage
+        onLoginSuccess({
+          token: response.data.token,
+          name: response.data.name || "",
+          email: response.data.email || email
+        });
 
       }
 
