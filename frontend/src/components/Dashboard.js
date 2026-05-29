@@ -3,6 +3,8 @@ import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL || "https://teamtask-backend-pdvc.onrender.com";
+
 function Dashboard() {
 
   const [tasks, setTasks] = useState([]);
@@ -33,7 +35,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "https://teamtask-backend-pdvc.onrender.com/tasks",
+        `${API_URL}/tasks`,
         {
           headers: {
             authorization: token
@@ -83,7 +85,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.post(
-      "https://teamtask-backend-pdvc.onrender.com/tasks",
+      `${API_URL}/tasks`,
       {
         title: title,
         description: description,
@@ -125,7 +127,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `https://teamtask-backend-pdvc.onrender.com/tasks/${id}`,
+      `${API_URL}/tasks/${id}`,
       {
         status: "Completed"
       },
@@ -163,7 +165,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     await axios.delete(
-      `https://teamtask-backend-pdvc.onrender.com/tasks/${id}`,
+      `${API_URL}/tasks/${id}`,
       {
         headers: {
           authorization: token
@@ -203,7 +205,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       await axios.put(
-        `https://teamtask-backend-pdvc.onrender.com/tasks/${editingTask._id}`,
+        `${API_URL}/tasks/${editingTask._id}`,
         {
           title: editTitle,
           description: editDescription,
@@ -449,6 +451,9 @@ if (sortType === "Due Date") {
                       className="task-card"
                       key={task._id}
                     >
+                      {task.createdByAdmin && (
+                        <span className="admin-assigned-badge">👑 Assigned by admin</span>
+                      )}
                       <div className="task-card-header">
                         <h3 className="task-title">{task.title}</h3>
                         <span

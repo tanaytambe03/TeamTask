@@ -1,20 +1,29 @@
 import "./Login.css";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+const API_URL = process.env.REACT_APP_API_URL || "https://teamtask-backend-pdvc.onrender.com";
                                                                                 
 function Login({ onSwitchToRegister, onLoginSuccess, prefilledEmail }) {
 
+  const navigate = useNavigate();
   const [email, setEmail] = useState(prefilledEmail || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleAdminLogin = () => {
+    setEmail("admin@gmail.com");
+    setPassword("");
+  };
 
   const handleLogin = async () => {
 
     try {
 
       const response = await axios.post(
-        "https://teamtask-backend-pdvc.onrender.com/login",
+        `${API_URL}/login`,
         {
           email: email,
           password: password
@@ -27,13 +36,22 @@ function Login({ onSwitchToRegister, onLoginSuccess, prefilledEmail }) {
 
         toast.success("Login successful! Welcome back.");
 
+        const role = response.data.role || "user";
+
         // Pass login data to App.js which updates state + localStorage
         onLoginSuccess({
           token: response.data.token,
           name: response.data.name || "",
           email: response.data.email || email,
-          role: response.data.role || "user"
+          role: role
         });
+
+        // Redirect based on role
+        if (role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
 
       }
 
@@ -49,7 +67,9 @@ function Login({ onSwitchToRegister, onLoginSuccess, prefilledEmail }) {
 
       console.log(error);
 
-      toast.error(error.response?.data || "Login failed. Please try again.");
+      const errMsg = error.response?.data?.message || error.response?.data || "Login failed. Please try again.";
+
+      toast.error(errMsg);
 
     }
 
@@ -69,7 +89,7 @@ function Login({ onSwitchToRegister, onLoginSuccess, prefilledEmail }) {
             <p className="login-subtitle">Welcome back! Sign in to continue.</p>
           </div>
 
-          <form className="login-form" onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+          <form id="login-form" className="login-form" onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
             <div className="input-group">
               <label htmlFor="login-email">Email</label>
               <input
@@ -128,6 +148,18 @@ function Login({ onSwitchToRegister, onLoginSuccess, prefilledEmail }) {
               className="login-btn"
             >
               Sign In
+            </button>
+
+            <div className="login-divider">
+              <span>or</span>
+            </div>
+
+            <button
+              type="button"
+              className="admin-login-btn"
+              onClick={handleAdminLogin}
+            >
+              🔐 Admin Login
             </button>
 
             <p className="register-link">

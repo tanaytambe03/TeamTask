@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const API_URL = process.env.REACT_APP_API_URL || "https://teamtask-backend-pdvc.onrender.com";
+
 function Register({ onSwitchToLogin }) {
 
   const [name, setName] = useState("");
@@ -15,7 +17,7 @@ function Register({ onSwitchToLogin }) {
     try {
 
       await axios.post(
-        "https://teamtask-backend-pdvc.onrender.com/signup",
+        `${API_URL}/signup`,
         {
           name: name,
           email: email,

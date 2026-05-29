@@ -345,6 +345,57 @@
   }
 }
 
+/* ========== DIVIDER ========== */
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.login-divider span {
+  color: #aaa;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ========== ADMIN LOGIN BUTTON ========== */
+
+.admin-login-btn {
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: #b71c1c;
+  border: 2px solid #b71c1c;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+.admin-login-btn:hover {
+  background: #b71c1c;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.25);
+}
+
+.admin-login-btn:active {
+  transform: translateY(0);
+}
+
 /* ========== REGISTER LINK ========== */
 
 .register-link {

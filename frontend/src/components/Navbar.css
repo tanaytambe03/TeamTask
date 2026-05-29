@@ -80,6 +80,25 @@
   background: rgba(255, 255, 255, 0.18);
 }
 
+/* Admin badge — red background for admins */
+
+.user-info.user-info--admin {
+  background: #d32f2f;
+}
+
+.user-info.user-info--admin:hover {
+  background: #b71c1c;
+}
+
+.user-info--admin .user-avatar {
+  background: #b71c1c;
+}
+
+.user-info--admin .user-email {
+  color: #fff;
+  font-weight: 700;
+}
+
 .user-avatar {
   width: 30px;
   height: 30px;
@@ -121,6 +140,212 @@
   transform: translateY(-1px);
 }
 
+/* ========== HAMBURGER BUTTON ========== */
+
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 6px;
+  transition: background 0.2s;
+}
+
+.hamburger-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2.5px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Animate hamburger to X when open */
+.hamburger-open .hamburger-line:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.hamburger-open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-open .hamburger-line:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* ========== MOBILE OVERLAY ========== */
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.overlay-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ========== MOBILE SLIDE-IN MENU ========== */
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100%;
+  background: #1a237e;
+  z-index: 1001;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu-open {
+  transform: translateX(0);
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mobile-menu-logo {
+  height: 32px;
+  width: auto;
+}
+
+.mobile-menu-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mobile-menu-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile nav links */
+
+.mobile-nav-links {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.mobile-nav-link:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav-link.active {
+  color: white;
+  background: rgba(255, 255, 255, 0.12);
+  border-left-color: white;
+}
+
+/* Mobile footer (user info + logout) */
+
+.mobile-menu-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-user-avatar {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff6f00;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mobile-user-email {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-logout-btn {
+  width: 100%;
+  padding: 10px;
+  background: white;
+  color: #1a237e;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mobile-logout-btn:hover {
+  background: #e8eaf6;
+}
+
 /* ========== TABLET (601–1024px) ========== */
 
 @media (min-width: 601px) and (max-width: 1024px) {
@@ -130,20 +355,31 @@
   }
 }
 
+/* ========== MOBILE & TABLET (≤1024px) ========== */
+
+@media (max-width: 1024px) {
+  .navbar-links-desktop {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .mobile-menu-overlay {
+    display: block;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+}
+
 /* ========== MOBILE (≤600px) ========== */
 
 @media (max-width: 600px) {
   .navbar {
     padding: 0 16px;
-  }
-
-  .navbar-links {
-    gap: 2px;
-  }
-
-  .nav-link {
-    padding: 6px 10px;
-    font-size: 0.8rem;
   }
 
   .navbar-logo {
@@ -166,9 +402,10 @@
   }
 
   .logout-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    display: none;
+  }
+
+  .mobile-menu {
+    width: 100%;
   }
 }
-
-

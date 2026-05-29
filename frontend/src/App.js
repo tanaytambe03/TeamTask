@@ -2,7 +2,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
@@ -10,9 +10,11 @@ import Register from "./components/Register";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./components/AdminDashboard";
+import Chat from "./components/Chat";
 
-function App() {
+function AppContent() {
 
+  const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
   const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
@@ -53,51 +55,72 @@ function App() {
     setUserEmail("");
     setUserRole("");
 
+    navigate("/");
+
   };
 
   return (
-    <BrowserRouter>
-      <div className="app-container">
+    <div className="app-container">
 
-        {token ? (
-          <>
-            <Navbar
-              userName={userName}
-              userEmail={userEmail}
-              userRole={userRole}
-              onLogout={handleLogout}
-            />
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </>
+      {token ? (
+        <>
+          <Navbar
+            userName={userName}
+            userEmail={userEmail}
+            userRole={userRole}
+            onLogout={handleLogout}
+          />
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={
+              userRole === "admin" ? (
+                <AdminDashboard />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            } />
+            <Route path="*" element={
+              userRole === "admin" ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            } />
+          </Routes>
+        </>
+      ) : (
+        isRegistering ? (
+          <Register onSwitchToLogin={(email) => {
+            setPrefilledEmail(email || "");
+            setIsRegistering(false);
+          }} />
         ) : (
-          isRegistering ? (
-            <Register onSwitchToLogin={(email) => {
-              setPrefilledEmail(email || "");
-              setIsRegistering(false);
-            }} />
-          ) : (
-            <Login
-              prefilledEmail={prefilledEmail}
-              onSwitchToRegister={() => {
-                setPrefilledEmail("");
-                setIsRegistering(true);
-              }}
-              onLoginSuccess={handleLoginSuccess}
-            />
-          )
-        )}
+          <Login
+            prefilledEmail={prefilledEmail}
+            onSwitchToRegister={() => {
+              setPrefilledEmail("");
+              setIsRegistering(true);
+            }}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        )
+      )}
 
-        <ToastContainer />
-      </div>
-    </BrowserRouter>
+      <ToastContainer />
+    </div>
   );
 
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
 }
 
 export default App;

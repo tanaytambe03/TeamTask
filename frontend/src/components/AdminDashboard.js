@@ -3,59 +3,68 @@ import "./AdminDashboard.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "https://teamtask-backend-pdvc.onrender.com";
+const API = process.env.REACT_APP_API_URL || "https://teamtask-backend-pdvc.onrender.com";
 
 function AdminDashboard() {
 
   const [activeTab, setActiveTab] = useState("users");
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [tasksLoading, setTasksLoading] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [taskSearch, setTaskSearch] = useState("");
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
+  const [creatingUser, setCreatingUser] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskAssignee, setNewTaskAssignee] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState("Medium");
+  const [newTaskStatus, setNewTaskStatus] = useState("Pending");
+  const [newTaskDueDate, setNewTaskDueDate] = useState("");
+  const [creatingTask, setCreatingTask] = useState(false);
 
   const getToken = () => localStorage.getItem("token");
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
+      setUsersLoading(true);
       const response = await axios.get(`${API}/admin/users`, {
         headers: { authorization: getToken() }
       });
       if (Array.isArray(response.data)) {
         setUsers(response.data);
       }
-      setLoading(false);
+      setUsersLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Failed to load users");
-      setLoading(false);
+      setUsersLoading(false);
     }
   };
 
   const fetchTasks = async () => {
     try {
-      setLoading(true);
+      setTasksLoading(true);
       const response = await axios.get(`${API}/admin/tasks`, {
         headers: { authorization: getToken() }
       });
       if (Array.isArray(response.data)) {
         setTasks(response.data);
       }
-      setLoading(false);
+      setTasksLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Failed to load tasks");
-      setLoading(false);
+      setTasksLoading(false);
     }
   };
 
+  // Fetch both users and tasks on mount AND on tab switch — keeps all stats fresh
   useEffect(() => {
-    if (activeTab === "users") {
-      fetchUsers();
-    } else {
-      fetchTasks();
-    }
+    fetchUsers();
+    fetchTasks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
@@ -66,18 +75,72 @@ function AdminDashboard() {
     if (!confirmDelete) return;
 
     try {
-      setLoading(true);
       await axios.delete(`${API}/admin/users/${userId}`, {
         headers: { authorization: getToken() }
       });
       toast.success(`User "${userName}" deleted`);
-      fetchUsers();
-      setLoading(false);
+      await fetchUsers();
     } catch (error) {
       console.log(error);
       toast.error("Failed to delete user");
-      setLoading(false);
+      setUsersLoading(false);
     }
+  };
+
+  const createUser = async () => {
+    if (!newUserName.trim() || !newUserEmail.trim() || !newUserPassword.trim()) {
+      toast.warning("All fields are required");
+      return;
+    }
+    setCreatingUser(true);
+    try {
+      await axios.post(
+        `${API}/admin/users`,
+        { name: newUserName, email: newUserEmail, password: newUserPassword },
+        { headers: { authorization: getToken() } }
+      );
+      toast.success(`User "${newUserName}" created`);
+      setNewUserName("");
+      setNewUserEmail("");
+      setNewUserPassword("");
+      await fetchUsers();
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to create user";
+      toast.error(msg);
+    }
+    setCreatingUser(false);
+  };
+
+  const createTask = async () => {
+    if (!newTaskTitle.trim() || !newTaskAssignee) {
+      toast.warning("Title and assigned user are required");
+      return;
+    }
+    setCreatingTask(true);
+    try {
+      await axios.post(
+        `${API}/admin/tasks`,
+        {
+          title: newTaskTitle,
+          user: newTaskAssignee,
+          priority: newTaskPriority,
+          status: newTaskStatus,
+          dueDate: newTaskDueDate
+        },
+        { headers: { authorization: getToken() } }
+      );
+      toast.success(`Task "${newTaskTitle}" created`);
+      setNewTaskTitle("");
+      setNewTaskAssignee("");
+      setNewTaskPriority("Medium");
+      setNewTaskStatus("Pending");
+      setNewTaskDueDate("");
+      await fetchTasks();
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to create task";
+      toast.error(msg);
+    }
+    setCreatingTask(false);
   };
 
   const deleteTask = async (taskId, taskTitle) => {
@@ -87,17 +150,15 @@ function AdminDashboard() {
     if (!confirmDelete) return;
 
     try {
-      setLoading(true);
       await axios.delete(`${API}/admin/tasks/${taskId}`, {
         headers: { authorization: getToken() }
       });
       toast.success(`Task "${taskTitle}" deleted`);
-      fetchTasks();
-      setLoading(false);
+      await fetchTasks();
     } catch (error) {
       console.log(error);
       toast.error("Failed to delete task");
-      setLoading(false);
+      setTasksLoading(false);
     }
   };
 
@@ -122,7 +183,6 @@ function AdminDashboard() {
 
   const totalUsers = users.length;
   const totalTasks = tasks.length;
-  const adminUsers = users.filter((u) => u.role === "admin").length;
   const completedTasks = tasks.filter((t) => t.status === "Completed").length;
   const pendingTasks = tasks.filter((t) => t.status === "Pending").length;
 
@@ -145,10 +205,7 @@ function AdminDashboard() {
           <span className="admin-stat-number">{totalUsers}</span>
           <span className="admin-stat-label">Total Users</span>
         </div>
-        <div className="admin-stat-card stat-admins">
-          <span className="admin-stat-number">{adminUsers}</span>
-          <span className="admin-stat-label">Admins</span>
-        </div>
+
         <div className="admin-stat-card stat-all-tasks">
           <span className="admin-stat-number">{totalTasks}</span>
           <span className="admin-stat-label">Total Tasks</span>
@@ -182,6 +239,41 @@ function AdminDashboard() {
       {/* ===== USERS TAB ===== */}
       {activeTab === "users" && (
         <div className="admin-section">
+          {/* CREATE USER FORM */}
+          <div className="admin-create-user">
+            <h3 className="admin-create-user-title">➕ Create New User</h3>
+            <div className="admin-create-user-form">
+              <input
+                type="text"
+                placeholder="Name"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+                className="admin-create-input"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={newUserEmail}
+                onChange={(e) => setNewUserEmail(e.target.value)}
+                className="admin-create-input"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={newUserPassword}
+                onChange={(e) => setNewUserPassword(e.target.value)}
+                className="admin-create-input"
+              />
+              <button
+                className="admin-create-btn"
+                disabled={creatingUser}
+                onClick={createUser}
+              >
+                {creatingUser ? "Creating..." : "Create User"}
+              </button>
+            </div>
+          </div>
+
           <div className="admin-search-bar">
             <input
               type="text"
@@ -207,9 +299,11 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
+                {usersLoading ? (
                   <tr>
-                    <td colSpan="5" className="admin-loading-cell">Loading...</td>
+                    <td colSpan="5" className="admin-loading-cell">
+                      <span className="admin-spinner admin-spinner--large" />
+                    </td>
                   </tr>
                 ) : filteredUsers.length === 0 ? (
                   <tr>
@@ -258,6 +352,74 @@ function AdminDashboard() {
       {/* ===== TASKS TAB ===== */}
       {activeTab === "tasks" && (
         <div className="admin-section">
+          {/* CREATE TASK FORM */}
+          <div className="admin-create-user">
+            <h3 className="admin-create-user-title">➕ Create New Task</h3>
+            <div className="admin-create-task-form">
+              <input
+                type="text"
+                placeholder="Task Title"
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                className="admin-create-input"
+              />
+              <select
+                className="admin-create-input"
+                value={newTaskAssignee}
+                onChange={(e) => setNewTaskAssignee(e.target.value)}
+              >
+                <option value="">— Assign to user —</option>
+                {users
+                  .filter((u) => u.role !== "admin")
+                  .map((u) => (
+                    <option key={u._id} value={u._id}>
+                      {u.name || u.email} ({u.email})
+                    </option>
+                  ))}
+              </select>
+              {newTaskAssignee && (
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={users.find((u) => u._id === newTaskAssignee)?.email || ""}
+                  className="admin-create-input"
+                  disabled
+                  readOnly
+                />
+              )}
+              <select
+                className="admin-create-input"
+                value={newTaskPriority}
+                onChange={(e) => setNewTaskPriority(e.target.value)}
+              >
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="Low">Low Priority</option>
+              </select>
+              <select
+                className="admin-create-input"
+                value={newTaskStatus}
+                onChange={(e) => setNewTaskStatus(e.target.value)}
+              >
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <input
+                type="date"
+                value={newTaskDueDate}
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                className="admin-create-input"
+              />
+              <button
+                className="admin-create-btn"
+                disabled={creatingTask}
+                onClick={createTask}
+              >
+                {creatingTask ? "Creating..." : "Create Task"}
+              </button>
+            </div>
+          </div>
+
           <div className="admin-search-bar">
             <input
               type="text"
@@ -285,9 +447,11 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
+                {tasksLoading ? (
                   <tr>
-                    <td colSpan="7" className="admin-loading-cell">Loading...</td>
+                    <td colSpan="7" className="admin-loading-cell">
+                      <span className="admin-spinner admin-spinner--large" />
+                    </td>
                   </tr>
                 ) : filteredTasks.length === 0 ? (
                   <tr>
