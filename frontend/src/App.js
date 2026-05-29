@@ -16,6 +16,7 @@ function App() {
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
   const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [prefilledEmail, setPrefilledEmail] = useState("");
 
   const handleLoginSuccess = (data) => {
 
@@ -67,9 +68,19 @@ function App() {
           </>
         ) : (
           isRegistering ? (
-            <Register onSwitchToLogin={() => setIsRegistering(false)} />
+            <Register onSwitchToLogin={(email) => {
+              setPrefilledEmail(email || "");
+              setIsRegistering(false);
+            }} />
           ) : (
-            <Login onSwitchToRegister={() => setIsRegistering(true)} onLoginSuccess={handleLoginSuccess} />
+            <Login
+              prefilledEmail={prefilledEmail}
+              onSwitchToRegister={() => {
+                setPrefilledEmail("");
+                setIsRegistering(true);
+              }}
+              onLoginSuccess={handleLoginSuccess}
+            />
           )
         )}
 
