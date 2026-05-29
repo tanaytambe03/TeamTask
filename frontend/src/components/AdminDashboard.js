@@ -14,11 +14,6 @@ function AdminDashboard() {
   const [userSearch, setUserSearch] = useState("");
   const [taskSearch, setTaskSearch] = useState("");
 
-  useEffect(() => {
-    if (activeTab === "users") fetchUsers();
-    else fetchTasks();
-  }, [activeTab]);
-
   const getToken = () => localStorage.getItem("token");
 
   const fetchUsers = async () => {
@@ -54,6 +49,15 @@ function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (activeTab === "users") {
+      fetchUsers();
+    } else {
+      fetchTasks();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   const deleteUser = async (userId, userName) => {
     const confirmDelete = window.confirm(
