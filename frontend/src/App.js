@@ -9,12 +9,14 @@ import Dashboard from "./components/Dashboard";
 import Register from "./components/Register";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
 
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
   const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const [isRegistering, setIsRegistering] = useState(false);
   const [prefilledEmail, setPrefilledEmail] = useState("");
 
@@ -23,16 +25,19 @@ function App() {
     const newToken = data.token;
     const newName = data.name || "";
     const newEmail = data.email || "";
+    const newRole = data.role || "user";
 
     // Save to localStorage for persistence
     localStorage.setItem("token", newToken);
     localStorage.setItem("userName", newName);
     localStorage.setItem("userEmail", newEmail);
+    localStorage.setItem("userRole", newRole);
 
     // Update React state
     setToken(newToken);
     setUserName(newName);
     setUserEmail(newEmail);
+    setUserRole(newRole);
 
   };
 
@@ -41,10 +46,12 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
 
     setToken(null);
     setUserName("");
     setUserEmail("");
+    setUserRole("");
 
   };
 
@@ -57,12 +64,14 @@ function App() {
             <Navbar
               userName={userName}
               userEmail={userEmail}
+              userRole={userRole}
               onLogout={handleLogout}
             />
             <Routes>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </>

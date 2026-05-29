@@ -31,7 +31,8 @@ function Login({ onSwitchToRegister, onLoginSuccess, prefilledEmail }) {
         onLoginSuccess({
           token: response.data.token,
           name: response.data.name || "",
-          email: response.data.email || email
+          email: response.data.email || email,
+          role: response.data.role || "user"
         });
 
       }

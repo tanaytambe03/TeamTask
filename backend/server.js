@@ -164,7 +164,8 @@ app.post("/login", async (req, res) => {
       message: "Login Successful",
       token: token,
       name: user.name,
-      email: user.email
+      email: user.email,
+      role: user.role
     });
 
   } catch (error) {
@@ -181,7 +182,7 @@ app.get(
   adminMiddleware,
   async (req, res) => {
 
-    const allTasks = await Task.find();
+    const allTasks = await Task.find().populate("user", "name email");
 
     res.send(allTasks);
 });
@@ -192,9 +193,39 @@ app.get(
   adminMiddleware,
   async (req, res) => {
 
-    const users = await User.find();
+    const users = await User.find().select("-password");
 
     res.send(users);
+});
+
+app.delete(
+  "/admin/users/:id",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      // Delete user and all their tasks
+      await Task.deleteMany({ user: req.params.id });
+      await User.findByIdAndDelete(req.params.id);
+      res.send("User and their tasks deleted");
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send(error.message);
+    }
+});
+
+app.delete(
+  "/admin/tasks/:id",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      await Task.findByIdAndDelete(req.params.id);
+      res.send("Task deleted by admin");
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send(error.message);
+    }
 });
 
 app.get("/me", authMiddleware, async (req, res) => {
@@ -217,9 +248,31 @@ app.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
+// Seed admin user on startup
+const seedAdmin = async () => {
+  try {
+    const existingAdmin = await User.findOne({ email: "admin@gmail.com" });
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash("123456", 10);
+      await new User({
+        name: "Admin",
+        email: "admin@gmail.com",
+        password: hashedPassword,
+        role: "admin"
+      }).save();
+      console.log("Admin user created: admin@gmail.com / 123456");
+    } else {
+      console.log("Admin user already exists");
+    }
+  } catch (error) {
+    console.log("Error seeding admin:", error.message);
+  }
+};
+
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await seedAdmin();
   console.log(`Server running on port ${PORT}`);
 });
 

@@ -14,7 +14,7 @@ function Register({ onSwitchToLogin }) {
 
     try {
 
-      const response = await axios.post(
+      await axios.post(
         "https://teamtask-backend-pdvc.onrender.com/signup",
         {
           name: name,

@@ -1,7 +1,7 @@
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
 
-function Navbar({ userName, userEmail, onLogout }) {
+function Navbar({ userName, userEmail, userRole, onLogout }) {
 
   return (
 
@@ -21,6 +21,11 @@ function Navbar({ userName, userEmail, onLogout }) {
         <NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
           Contact
         </NavLink>
+        {userRole === "admin" && (
+          <NavLink to="/admin" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            Admin
+          </NavLink>
+        )}
       </div>
 
       <div className="navbar-right">
